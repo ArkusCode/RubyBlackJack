@@ -1,5 +1,5 @@
 module GameUI
-  NAME = /^[a-zа-я0-9]+$/i
+  NAME = /^[\w]+$/i
 
   def play_game
     initiate_game
