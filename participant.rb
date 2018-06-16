@@ -1,8 +1,9 @@
 class Participant
-  attr_accessor :hand, :cur_total, :money
+  attr_accessor :hand, :cur_total, :money, :bet
   
   def initialize
     @money = 100
+    @bet = 10
     @hand = []
   end
 
@@ -34,5 +35,18 @@ class Participant
     self.hand.each {|card| total = calculate_value(total, card)}
     @cur_total = total
     total
+  end
+
+  def reset
+    self.hand.clear
+    @cur_total = 0
+  end
+
+  def win
+    self.money += (@bet * 2)
+  end
+
+  def bust
+    self.money -= @bet
   end
 end
