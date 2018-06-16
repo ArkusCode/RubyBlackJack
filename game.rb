@@ -1,4 +1,6 @@
 class Game
+  include GameUI
+
   attr_accessor :game_deck, :player, :dealer, :players
   DECK = %w(2♥ 3♥ 4♥ 5♥ 6♥ 7♥ 8♥ 9♥ 10♥ J♥ Q♥ K♥ A♥
             2♣ 3♣ 4♣ 5♣ 6♣ 7♣ 8♣ 9♣ 10♣ J♣ Q♣ K♣ A♣
@@ -7,12 +9,6 @@ class Game
   def initialize
     @game_deck = DECK.shuffle
     @players = []
-  end
-
-  def initialize_game
-    @player = Player.new("Vasyan")
-    @dealer = Dealer.new
-    @players.push(@player, @dealer)
   end
 
   def run_round
