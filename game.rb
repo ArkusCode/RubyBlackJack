@@ -7,8 +7,14 @@ class Game
             2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠ 10♠ J♠ Q♠ K♠ A♠
             2♦ 3♦ 4♦ 5♦ 6♦ 7♦ 8♦ 9♦ 10♦ J♦ Q♦ K♦ A♦).freeze
   def initialize
-    @game_deck = DECK.shuffle
+    new_deck
     @players = []
+  end
+
+  protected
+
+  def new_deck
+    @game_deck = DECK.shuffle
   end
 
   def run_round
@@ -16,18 +22,26 @@ class Game
     player_turn
     dealer_turn
   rescue RuntimeError => e
-    p "Перебор! Ваша ставка уходит дилеру, удачи в следующем раунде."
     dealer_win
     next_round
   end
 
   def hit(player)
-    player.hand.push(@game_deck.pop)
+    if @game_deck.last !~ /[A]/
+      player.hand.unshift(@game_deck.pop)
+    else
+      player.hand.push(@game_deck.pop)
+    end
+  end
+
+  def blackjack?
+    @player.current_total == 21 ? blackjack! : false
   end
 
   def dealer_turn
     @dealer.current_total
     @dealer.cur_total <= 16 ? hit(@dealer) : true
+    dealer_info
     round_result
   end
 
@@ -43,17 +57,25 @@ class Game
     end
   end
 
+  def blackjack!
+    @dealer.bust
+    @player.win
+    blackjack_ui
+  end
+
   def player_win
     @dealer.bust
     @player.win
+    win_ui
   end
 
   def dealer_win
     @dealer.win
     @player.bust
+    lose_ui
   end
 
   def draw
-    true
+    draw_ui
   end
 end

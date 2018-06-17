@@ -43,7 +43,7 @@ class Participant
   end
 
   def win
-    self.money += (@bet * 2)
+    self.money += @bet
   end
 
   def bust
