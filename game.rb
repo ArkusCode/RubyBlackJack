@@ -39,8 +39,7 @@ class Game
   end
 
   def dealer_turn
-    @dealer.current_total
-    @dealer.cur_total <= 16 ? hit(@dealer) : true
+    @dealer.current_total < 17 ? hit(@dealer) : true
     dealer_info
     round_result
   end
