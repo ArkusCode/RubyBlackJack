@@ -2,10 +2,10 @@ class Game
   include GameUI
 
   attr_accessor :game_deck, :player, :dealer, :players
-  DECK = %w(2♥ 3♥ 4♥ 5♥ 6♥ 7♥ 8♥ 9♥ 10♥ J♥ Q♥ K♥ A♥
+  DECK = %w[2♥ 3♥ 4♥ 5♥ 6♥ 7♥ 8♥ 9♥ 10♥ J♥ Q♥ K♥ A♥
             2♣ 3♣ 4♣ 5♣ 6♣ 7♣ 8♣ 9♣ 10♣ J♣ Q♣ K♣ A♣
             2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠ 10♠ J♠ Q♠ K♠ A♠
-            2♦ 3♦ 4♦ 5♦ 6♦ 7♦ 8♦ 9♦ 10♦ J♦ Q♦ K♦ A♦).freeze
+            2♦ 3♦ 4♦ 5♦ 6♦ 7♦ 8♦ 9♦ 10♦ J♦ Q♦ K♦ A♦].freeze
   def initialize
     new_deck
     @players = []
@@ -21,7 +21,7 @@ class Game
     2.times { @players.each { |player| hit(player) } }
     player_turn
     dealer_turn
-  rescue RuntimeError => e
+  rescue RuntimeError
     dealer_win
     next_round
   end
@@ -46,7 +46,7 @@ class Game
   end
 
   def round_result
-    if @dealer.current_total > 21 
+    if @dealer.current_total > 21
       player_win
     elsif @dealer.current_total > @player.current_total
       dealer_win

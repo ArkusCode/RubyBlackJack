@@ -11,7 +11,7 @@ module GameUI
   protected
 
   def initiate_game
-    system "clear"
+    system 'clear'
     line
     p '|           Weclome to Arkus BlackJack!             |'
     p '|             Standard American rules.              |'
@@ -33,14 +33,14 @@ module GameUI
   end
 
   def run_game
-    system "clear"
+    system 'clear'
     @round_num += 1
     line
     p "Round #{@round_num} start"
     p "Cash - #{@player.money}$"
     line
     run_round
-    next_round    
+    next_round
   end
 
   def player_turn
@@ -49,73 +49,72 @@ module GameUI
     p 'Hit or Stand?(h/s)'
     choice = ''
     loop do
-    choice = gets.chomp.downcase.capitalize!
-    break if choice == 'H' || choice == 'S'
-    p 'Wrong command, try again! (h/s)'
+      choice = gets.chomp.downcase.capitalize!
+      break if choice == 'H' || choice == 'S'
+      p 'Wrong command, try again! (h/s)'
     end
     if choice == 'H'
       hit(@player)
       current_info
       raise 'Bust!' if player.current_total > 21
-    else 
+    else
       p "Player #{@player.id} Stand"
     end
   end
 
   def current_info
-    p "Current hand: #{@player.hand.join(", ")}"
+    p "Current hand: #{@player.hand.join(', ')}"
     p "Cards' value: #{@player.current_total}"
   end
 
   def dealer_info
-    p "Dealer hand: #{@dealer.hand.join(", ")}"
+    p "Dealer hand: #{@dealer.hand.join(', ')}"
     p "Dealer cards' value: #{@dealer.current_total}"
     sleep(1)
-  end    
+  end
 
   def next_round
     p 'Ready for another round? Y/N'
     choice = ''
     loop do
-    choice = gets.chomp.downcase.capitalize!
-    break if choice == 'Y' || choice == 'N'
-    p 'Wrong command, try again! (Y\N)'
+      choice = gets.chomp.downcase.capitalize!
+      break if choice == 'Y' || choice == 'N'
+      p 'Wrong command, try again! (Y\N)'
     end
     if choice == 'Y'
       cleanup
       qualify_players
       qualify_deck
       run_game
-    else 
+    else
       money = 100 - @player.money
-      p "Thanks for playing!" 
-      p "Your balance after the game: #{money * (-1)} bucks"
+      p 'Thanks for playing!'
+      p "Your balance after the game: #{money * -1} bucks"
       exit
     end
   end
 
   def cleanup
-    @players.each { |player| player.reset }
+    @players.each(&:reset)
   end
 
   def qualify_deck
     if @game_deck.size < 6
       p 'Loading new deck in shoe!'
       new_deck
-      sleep(1)
     else
       p 'Shuffling the deck!'
       @game_deck.shuffle
-      sleep(1)
     end
+    sleep(1)
   end
 
   def qualify_players
-    if @player.money == 0
+    if @player.money.zero?
       p "You spend all yours' money. So sad."
       sleep(1)
       exit
-    elsif @dealer.money == 0
+    elsif @dealer.money.zero?
       p "Dealer run out of money! You'r cheater!"
       sleep(1)
       exit
@@ -130,14 +129,14 @@ module GameUI
 
   def blackjack_ui
     line
-    p "BlackJack! You win this round!"
+    p 'BlackJack! You win this round!'
     line
     next_round
   end
 
   def win_ui
     line
-    p "You win this round! "
+    p 'You win this round! '
     line
   end
 
@@ -152,5 +151,4 @@ module GameUI
     p 'Draw. Bets returned to the owners.'
     line
   end
-        
 end

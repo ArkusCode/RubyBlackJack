@@ -1,0 +1,23 @@
+AllCops:
+  DisplayCopNames: true
+
+Style/MultipleComparison:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Max: 150
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/LineLength:
+  Max: 100
+
+Metrics/MethodLength:
+  Max: 18
+
+Metrics/AbcSize:
+  Max: 21

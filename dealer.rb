@@ -3,6 +3,6 @@ class Dealer < Participant
 
   def initialize
     super()
-    @id = "Dealer"
+    @id = 'Dealer'
   end
 end
