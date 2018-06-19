@@ -8,16 +8,16 @@ Style/Documentation:
   Enabled: false
 
 Metrics/ModuleLength:
-  Max: 150
+  Max: 100
 
 Metrics/ClassLength:
   Max: 150
 
 Metrics/LineLength:
-  Max: 100
+  Max: 80
 
 Metrics/MethodLength:
-  Max: 18
+  Max: 15
 
 Metrics/AbcSize:
-  Max: 21
+  Max: 15

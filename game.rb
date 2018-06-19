@@ -1,47 +1,74 @@
 class Game
-  include GameUI
+  attr_reader :game_deck, :bank, :player, :dealer, :players, :ui
 
-  attr_accessor :game_deck, :player, :dealer, :players
-  DECK = %w[2♥ 3♥ 4♥ 5♥ 6♥ 7♥ 8♥ 9♥ 10♥ J♥ Q♥ K♥ A♥
-            2♣ 3♣ 4♣ 5♣ 6♣ 7♣ 8♣ 9♣ 10♣ J♣ Q♣ K♣ A♣
-            2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠ 10♠ J♠ Q♠ K♠ A♠
-            2♦ 3♦ 4♦ 5♦ 6♦ 7♦ 8♦ 9♦ 10♦ J♦ Q♦ K♦ A♦].freeze
   def initialize
-    new_deck
+    @game_deck = Deck.new
+    @dealer = Dealer.new
+    @bank = Bank.new
+    @ui = GameUi.new
     @players = []
+  end
+
+  def play_game
+    @ui.initiate_game
+    @player = Player.new(@ui.create_player)
+    @players.push(@player, @dealer)
+    run_round
   end
 
   protected
 
-  def new_deck
-    @game_deck = DECK.shuffle
-  end
-
   def run_round
-    2.times { @players.each { |player| hit(player) } }
+    @ui.round_start
+    2.times { @players.each { |player| @game_deck.hit(player) } }
     player_turn
     dealer_turn
+    next_round?
   rescue RuntimeError
     dealer_win
-    next_round
+    next_round?
   end
 
-  def hit(player)
-    if @game_deck.last !~ /[A]/
-      player.hand.unshift(@game_deck.pop)
+  def player_turn
+    @ui.current_info(@player)
+    blackjack?
+    choice = @ui.player_choice
+    if choice == 'H'
+      @game_deck.hit(@player)
+      @ui.current_info(@player)
+      raise 'Bust!' if @player.current_total > 21
     else
-      player.hand.push(@game_deck.pop)
+      @ui.player_stand(@player)
     end
   end
 
-  def blackjack?
-    @player.current_total == 21 ? blackjack! : false
+  def next_round?
+    choice = @ui.next_round
+    if choice == 'Y'
+      cleanup
+      qualify_players
+      qualify_deck
+      run_round
+    else
+      money = 100 - @player.money
+      @ui.the_end(money)
+      exit
+    end
   end
 
   def dealer_turn
-    @dealer.current_total < 17 ? hit(@dealer) : true
-    dealer_info
+    @dealer.current_total < 17 ? @game_deck.hit(@dealer) : true
+    @ui.dealer_info(@dealer)
     round_result
+  end
+
+  def blackjack?
+    if @player.current_total == 21
+      blackjack!
+      next_round?
+    else
+      false
+    end
   end
 
   def round_result
@@ -56,25 +83,62 @@ class Game
     end
   end
 
+  def cleanup
+    @players.each(&:reset)
+  end
+
+  def qualify_deck
+    if not_enough_cards?
+      @ui.new_deck_message
+      deck_renew
+    else
+      @ui.shuffling_message
+      @game_deck.deck.shuffle
+    end
+    sleep(1)
+  end
+
+  def qualify_players
+    if @player.money.zero?
+      @ui.not_enough_money
+      sleep(1)
+      exit
+    elsif @dealer.money.zero?
+      @ui.casino_lose
+      sleep(1)
+      exit
+    else
+      true
+    end
+  end
+
+  def not_enough_cards?
+    @game_deck.deck.size < 6
+  end
+
+  def deck_renew
+    @game_deck.new_deck
+  end
+
   def blackjack!
-    @dealer.bust
-    @player.win
-    blackjack_ui
+    @ui.blackjack_message
+    @bank.bust(@dealer)
+    @bank.win(@player)
   end
 
   def player_win
-    @dealer.bust
-    @player.win
-    win_ui
+    @ui.player_win_message
+    @bank.bust(@dealer)
+    @bank.win(@player)
   end
 
   def dealer_win
-    @dealer.win
-    @player.bust
-    lose_ui
+    @ui.player_lose_message
+    @bank.bust(@player)
+    @bank.win(@dealer)
   end
 
   def draw
-    draw_ui
+    @ui.draw_message
   end
 end
