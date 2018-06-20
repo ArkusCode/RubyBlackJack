@@ -33,7 +33,7 @@ class Game
     @ui.current_info(@player)
     blackjack?
     choice = @ui.player_choice
-    if choice == 'H'
+    if choice == :hit
       @game_deck.hit(@player)
       @ui.current_info(@player)
       raise 'Bust!' if @player.current_total > 21
@@ -44,7 +44,7 @@ class Game
 
   def next_round?
     choice = @ui.next_round
-    if choice == 'Y'
+    if choice == :yes
       cleanup
       qualify_players
       qualify_deck

@@ -1,5 +1,6 @@
 class GameUi
   NAME = /^[а-я\w]+$/i
+  CHOICE = {'H' => :hit, 'S' => :stand, 'Y' => :yes, 'N' => :no }
   attr_reader :round_num
 
   def initiate_game
@@ -37,7 +38,7 @@ class GameUi
       break if choice == 'H' || choice == 'S'
       p 'Wrong command, try again! (h/s)'
     end
-    choice
+    CHOICE[choice]
   end
 
   def player_stand(player)
@@ -64,7 +65,7 @@ class GameUi
       break if choice == 'Y' || choice == 'N'
       p 'Wrong command, try again! (Y\N)'
     end
-    choice
+    CHOICE[choice]
   end
 
   def the_end(money)
