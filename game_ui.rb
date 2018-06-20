@@ -1,6 +1,6 @@
 class GameUi
   NAME = /^[а-я\w]+$/i
-  CHOICE = {'H' => :hit, 'S' => :stand, 'Y' => :yes, 'N' => :no }
+  CHOICE = { 'H' => :hit, 'S' => :stand, 'Y' => :yes, 'N' => :no }.freeze
   attr_reader :round_num
 
   def initiate_game
